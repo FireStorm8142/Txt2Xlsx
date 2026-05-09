@@ -1,11 +1,5 @@
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
-
-### IntelliJ IDEA ###
+.mvn/
 .idea/
-*.iws
-*.iml
-*.ipr
+src/main/java/*.class
+src/main/java/Sample.txt
