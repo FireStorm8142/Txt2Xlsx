@@ -8,6 +8,11 @@ public class Student {
     List<String> internalGrades;
     List<Subject> subjects;
     public Student (String rollNo, String gender, String name, String result, List<String> internalGrades, List<Subject> subjects) {
-
+        this.rollNo = rollNo;
+        this.gender = gender;
+        this.name = name;
+        this.result = result;
+        this.internalGrades = internalGrades;
+        this.subjects = subjects;
     }
 }
