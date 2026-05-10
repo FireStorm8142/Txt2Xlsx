@@ -1,7 +1,6 @@
 target/
 .mvn/
 .idea/
-src/main/java/*.class
 src/main/java/Sample.txt
 *.xlsx
 *.txt

@@ -14,7 +14,6 @@ public class Main {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();
                 try {
-
                     TxtReader reader = new TxtReader();
                     Parser parser = new Parser();
                     ExcelGenerator generator = new ExcelGenerator();
@@ -24,15 +23,9 @@ public class Main {
                     generator.excelGenerator(students);
 
                     JOptionPane.showMessageDialog(frame, "Excel generated successfully!");
-
                 } catch (Exception ex) {
-
                     ex.printStackTrace();
-
-                    JOptionPane.showMessageDialog(
-                            frame,
-                            ex.getMessage()
-                    );
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
                 }
             }
         });

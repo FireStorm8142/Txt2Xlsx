@@ -3,7 +3,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,7 @@ public class ExcelGenerator {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Results");
         int rowNum = 0;
+        //Mapping subject codes to subject names
         final Map<String, String> subjectName = Map.ofEntries(Map.entry("301", "English Core"),
             Map.entry("041", "Mathematics"), Map.entry("042", "Physics"),
             Map.entry("043", "Chemistry"), Map.entry("044", "Biology"),
@@ -29,7 +29,6 @@ public class ExcelGenerator {
 
         int subjectCol = 4;
         for (int i = 1; i <= 5; i++) {
-
             header.createCell(subjectCol++).setCellValue("Sub " + i + " Code");
             header.createCell(subjectCol++).setCellValue("Sub " + i + " Name");
             header.createCell(subjectCol++).setCellValue("Sub " + i + " Marks");
@@ -47,7 +46,7 @@ public class ExcelGenerator {
             int col = 4;
             for (Subject s : student.subjects) {
                 row.createCell(col++).setCellValue(s.code);
-                row.createCell(col++).setCellValue(subjectName.getOrDefault(s.code, "Unknown Subject"));
+                row.createCell(col++).setCellValue(subjectName.getOrDefault(s.code, "Subject Not Mapped"));
                 row.createCell(col++).setCellValue(s.marks);
                 row.createCell(col++).setCellValue(s.grade);
             }

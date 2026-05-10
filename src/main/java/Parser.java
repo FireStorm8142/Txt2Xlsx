@@ -39,7 +39,7 @@ public class Parser {
                     }
                 }
 
-                //this loop reads and stores the internal grades until result is detected
+                //this loop keeps reading tokens (internal grades) until result is detected
                 List<String> internalGradeCodes = new ArrayList<>();
                 for (; internalGradeIndex<tokens.length; internalGradeIndex++){
                     if (tokens[internalGradeIndex].matches("[A-F][1-2]?")) internalGradeCodes.add(tokens[internalGradeIndex]);
@@ -62,8 +62,9 @@ public class Parser {
                     else break;
                 }
 
+                //check for malformed data (Mismatch b/w number of sub. codes and parsed grades/marks)
                 if (marks.size() != subjectCodes.size() || grades.size() != subjectCodes.size()) {
-                    System.out.println("Data has mismatch, skipping row");
+                    System.out.println("Data mismatch, skipping row");
                     continue;
                 }
 
@@ -77,7 +78,7 @@ public class Parser {
                 }
 
                 //finally, create student object with list of subjects mapped
-                student = new Student(roll, gender, name.toString().trim(), result, internalGradeCodes,subjects);
+                student = new Student(roll, gender, name.toString().trim(), result, internalGradeCodes, subjects);
                 students.add(student);
             }
         }
