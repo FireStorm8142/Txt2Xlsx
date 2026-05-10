@@ -3,6 +3,5 @@ target/
 .idea/
 src/main/java/*.class
 src/main/java/Sample.txt
-dependency-reduced-pom.xml
 *.xlsx
 *.txt
