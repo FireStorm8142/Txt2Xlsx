@@ -8,7 +8,7 @@ public class Main {
 
         JFrame frame = new JFrame("Txt2Xlsx");
         JButton button = new JButton("Choose TXT File");
-        button.addActionListener(e -> {
+        button.addActionListener(_ -> {
             JFileChooser chooser = new JFileChooser();
             int result = chooser.showOpenDialog(frame);
             if (result == JFileChooser.APPROVE_OPTION) {
@@ -18,9 +18,14 @@ public class Main {
                     Parser parser = new Parser();
                     ExcelGenerator generator = new ExcelGenerator();
 
-                    List<String> lines = reader.reader(file.getAbsolutePath());
-                    List<Student> students = parser.parser(lines);
-                    generator.excelGenerator(students);
+                    List<String> lines = reader.reader(file.getAbsolutePath()); //read all lines from txt file
+                    List<Student> students = parser.parser(lines); //parse all lines and create tokens
+                    generator.masterGenerator(students); //generate excel sheets
+                    generator.subjectStats(students);
+                    generator.percentageRange(students);
+                    generator.top10Science(students);
+                    generator.top10Commerce(students);
+                    generator.finalWrite();
 
                     JOptionPane.showMessageDialog(frame, "Excel generated successfully!");
                 } catch (Exception ex) {
