@@ -7,4 +7,9 @@ public class Subject {
         this.marks = marks;
         this.grade = grade;
     }
+
+    public int getMarks(){
+        if (marks.equals("AB")) return 0;
+        else return Integer.parseInt(marks);
+    }
 }
