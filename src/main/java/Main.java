@@ -22,7 +22,7 @@ public class Main {
                     List<Student> students = parser.parser(lines); //parse all lines and create tokens
                     generator.masterGenerator(students); //generate excel sheets
                     generator.subjectStats(students);
-//                    generator.percentageRange(students);
+                    generator.percentageRange(students);
 //                    generator.top10Science(students);
 //                    generator.top10Commerce(students);
                     generator.finalWrite();

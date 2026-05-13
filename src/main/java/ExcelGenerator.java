@@ -1,5 +1,6 @@
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,10 +52,12 @@ public class ExcelGenerator {
             for (Subject sub : student.subjects) {
                 if (sub.code.equals("041") || sub.code.equals("042")) {
                     row.createCell(col++).setCellValue("SCIENCE");
+                    student.stream = "SCIENCE";
                     break;
                 }
                 else if(sub.code.equals("030")) {
                     row.createCell(col++).setCellValue("COMMERCE");
+                    student.stream = "COMMERCE";
                     break;
                 }
             }
@@ -75,7 +78,7 @@ public class ExcelGenerator {
     public void subjectStats(List<Student> students) {
         int rowNum = 0;
         sheet = workbook.createSheet("Subject PI & Avg");
-        //This is for formatting the mean to 2 decimal place's
+        //This is for formatting the mean score to 2 decimal place's
         CellStyle decimalStyle = workbook.createCellStyle();
         DataFormat formatter = workbook.createDataFormat();
         decimalStyle.setDataFormat(formatter.getFormat("0.00"));
@@ -121,16 +124,90 @@ public class ExcelGenerator {
             cell = row.createCell(col);
             cell.setCellValue(meanScore);
             cell.setCellStyle(decimalStyle);
-            // Auto-size columns
-            for (i = 0; i < 15; i++) {
-                sheet.autoSizeColumn(i);
-            }
+        }
+        // Auto-size columns
+        for (i = 0; i < 15; i++) {
+            sheet.autoSizeColumn(i);
         }
     }
 
     public void percentageRange(List<Student> students) {
         int rowNum = 0;
         sheet = workbook.createSheet("Percentage Range Dist");
+        //This merges 3 columns into 1 in the header row
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 1, 3));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 4, 6));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 7, 9));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 10, 12));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 13, 15));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 16, 18));
+        //Centering header columns
+        CellStyle centerStyle = workbook.createCellStyle();
+        centerStyle.setAlignment(HorizontalAlignment.CENTER);
+        centerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        //-----Percentage Range Distance Page-----//
+        //Header Row
+        Row header = sheet.createRow(rowNum++);
+        header.createCell(0).setCellValue("  Stream/Category  ");
+        header.createCell(1).setCellValue("  0-32.9% (Fail)  ");
+        header.createCell(4).setCellValue("  33-44.9%  ");
+        header.createCell(7).setCellValue("  45-59.9%  ");
+        header.createCell(10).setCellValue("  60-74.9%  ");
+        header.createCell(13).setCellValue("  75-89.9%  ");
+        header.createCell(16).setCellValue("  90-100%  ");
+        header = sheet.createRow(rowNum++);
+        header.createCell(0).setCellValue("    ");
+        for (int i = 1; i < 18; i++) {
+            header.createCell(i++).setCellValue("  B  ");
+            header.createCell(i++).setCellValue("  G  ");
+            header.createCell(i).setCellValue("  T  ");
+        }
+
+        //Student Rows
+        //3-D array to store student Stream, Marks and Gender
+        int[][][] ranges = new int[3][6][3];
+        for (Student  s : students) {
+            double percentage = s.getPercentage();
+            int Index;
+            int Stream;
+            if (percentage < 33) Index = 0;
+            else if (percentage < 45) Index = 1;
+            else if (percentage < 60) Index = 2;
+            else if (percentage < 75) Index = 3;
+            else if (percentage < 90) Index = 4;
+            else Index = 5;
+
+            if (s.stream.equals("SCIENCE")) Stream = 0;
+            else Stream = 1;
+
+            ranges[Stream][Index][2]++;
+            if (s.gender.equalsIgnoreCase("M")) ranges[Stream][Index][0]++;
+            else ranges[Stream][Index][1]++;
+        }
+        //Total Sum
+        for (int i = 0; i < 6; i++){
+            ranges[2][i][0] = ranges[0][i][0] + ranges[1][i][0];
+            ranges[2][i][1] = ranges[0][i][1] + ranges[1][i][1];
+            ranges[2][i][2] = ranges[0][i][2] + ranges[1][i][2];
+        }
+
+        String[] streamName = {"SCIENCE", "COMMERCE", "OVERALL"};
+        for (int i = 0; i<streamName.length; i++) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(streamName[i]);
+
+            int col = 1;
+            for (int r = 0; r < 6; r++){
+                row.createCell(col++).setCellValue(ranges[i][r][0]);
+                row.createCell(col++).setCellValue(ranges[i][r][1]);
+                row.createCell(col++).setCellValue(ranges[i][r][2]);
+            }
+        }
+        // Auto-size columns
+        for (int i = 0; i < 20; i++) {
+            sheet.autoSizeColumn(i);
+        }
     }
 
     public void top10Science(List<Student> students) {
