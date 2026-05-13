@@ -1,7 +1,6 @@
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ public class ExcelGenerator {
             Map.entry("065", "Informatics Practices"), Map.entry("241", "Applied Mathematics"),
             Map.entry("812", "Artificial Intelligence"));
 
-    public void masterGenerator(List<Student> students) throws IOException {
+    public void masterGenerator(List<Student> students) {
         int rowNum = 0;
         sheet = workbook.createSheet("Master");
         //-----ALl Stats page-----//
@@ -76,6 +75,11 @@ public class ExcelGenerator {
     public void subjectStats(List<Student> students) {
         int rowNum = 0;
         sheet = workbook.createSheet("Subject PI & Avg");
+        //This is for formatting the mean to 2 decimal place's
+        CellStyle decimalStyle = workbook.createCellStyle();
+        DataFormat formatter = workbook.createDataFormat();
+        decimalStyle.setDataFormat(formatter.getFormat("0.00"));
+        Cell cell;
         String[] grades = {"A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E"};
         //-----Subject Performance Index and Average Page-----//
         //Header Row
@@ -83,24 +87,44 @@ public class ExcelGenerator {
         header.createCell(0).setCellValue("Code");
         header.createCell(1).setCellValue("Subject Name");
         header.createCell(2).setCellValue("Appeared");
-        header.createCell(3).setCellValue("Result");
-        int i = 4;
+        int i = 3;
         for (String grade : grades) {
             header.createCell(i++).setCellValue(grade);
         }
         header.createCell(i++).setCellValue("Highest");
-        header.createCell(i++).setCellValue("Mean Score");
-        header.createCell(i).setCellValue("PI %");
+        header.createCell(i).setCellValue("Mean Score");
 
         //Student Rows
-        int highest = 0, appeared = 0, totalMarks = 0;
-        Map<String, Integer> gradeCount = new HashMap<>();
         for (String key : subjectName.keySet()) {
+            //Individual stats for each Subject
+            int highest = 0, appeared = 0, totalMarks = 0;
+            Map<String, Integer> gradeCount = new HashMap<>();
             int col = 0;
             Row row = sheet.createRow(rowNum++);
             row.createCell(col++).setCellValue(key);
             row.createCell(col++).setCellValue(subjectName.get(key));
-
+            //This loop iterates through each subject of all the students and aggregates the data
+            for (Student student : students) {
+                for (Subject sub : student.subjects) {
+                    if (sub.code.equals(key)) {
+                        appeared++;
+                        highest = Math.max(highest, Integer.parseInt(sub.marks));
+                        totalMarks += Integer.parseInt(sub.marks);
+                        gradeCount.put(sub.grade, gradeCount.getOrDefault(sub.grade, 0)+1);
+                    }
+                }
+            }
+            double meanScore = (double) totalMarks / appeared;
+            row.createCell(col++).setCellValue(Integer.toString(appeared));
+            for (i = 0; i<grades.length; i++) row.createCell(col++).setCellValue(Integer.toString(gradeCount.getOrDefault(grades[i], 0)));
+            row.createCell(col++).setCellValue(Integer.toString(highest));
+            cell = row.createCell(col);
+            cell.setCellValue(meanScore);
+            cell.setCellStyle(decimalStyle);
+            // Auto-size columns
+            for (i = 0; i < 15; i++) {
+                sheet.autoSizeColumn(i);
+            }
         }
     }
 
