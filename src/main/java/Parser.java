@@ -64,7 +64,7 @@ public class Parser {
 
                 //check for malformed data (Mismatch b/w number of sub. codes and parsed grades/marks)
                 if (marks.size() != subjectCodes.size() || grades.size() != subjectCodes.size()) {
-                    System.out.println("Data mismatch, skipping row");
+                    System.out.printf("Data mismatch for student : %s, skipping row", name.toString());
                     continue;
                 }
 

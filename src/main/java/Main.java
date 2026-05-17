@@ -23,8 +23,8 @@ public class Main {
                     generator.masterGenerator(students); //generate excel sheets
                     generator.subjectStats(students);
                     generator.percentageRange(students);
-//                    generator.top10Science(students);
-//                    generator.top10Commerce(students);
+                    generator.top10Science(students);
+                    generator.top10Commerce(students);
                     generator.finalWrite();
 
                     JOptionPane.showMessageDialog(frame, "Excel generated successfully!");

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class ExcelGenerator {
     Workbook workbook = new XSSFWorkbook();
@@ -19,7 +21,7 @@ public class ExcelGenerator {
             Map.entry("083", "Computer Science"), Map.entry("030", "Economics"),
             Map.entry("054", "Business Studies"), Map.entry("055", "Accountancy"),
             Map.entry("065", "Informatics Practices"), Map.entry("241", "Applied Mathematics"),
-            Map.entry("812", "Artificial Intelligence"));
+            Map.entry("812", "Marketing"));
 
     public void masterGenerator(List<Student> students) {
         int rowNum = 0;
@@ -192,6 +194,7 @@ public class ExcelGenerator {
             ranges[2][i][2] = ranges[0][i][2] + ranges[1][i][2];
         }
 
+        //Setting values for each cell
         String[] streamName = {"SCIENCE", "COMMERCE", "OVERALL"};
         for (int i = 0; i<streamName.length; i++) {
             Row row = sheet.createRow(rowNum++);
@@ -213,11 +216,57 @@ public class ExcelGenerator {
     public void top10Science(List<Student> students) {
         int rowNum = 0;
         sheet = workbook.createSheet("Top 10 Science");
+        //-----Top 10 Science Students-----
+        //Header Row
+        Row header = sheet.createRow(rowNum++);
+        header.createCell(0).setCellValue("Rank");
+        header.createCell(1).setCellValue("Roll No");
+        header.createCell(2).setCellValue("Name");
+        header.createCell(3).setCellValue("Total Marks");
+        header.createCell(4).setCellValue("Percentage");
+
+        List<Student> topScience = students.stream().filter(s -> s.stream.equals("SCIENCE"))
+        .sorted(Comparator.comparingDouble(Student::getPercentage).reversed()).limit(10).toList();
+
+        //Student Rows
+        int rank = 1;
+        for (Student s : topScience) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(rank++);
+            row.createCell(1).setCellValue(s.rollNo);
+            row.createCell(2).setCellValue(s.name);
+            row.createCell(3).setCellValue(s.getTotal());
+            row.createCell(4).setCellValue(s.getPercentage());
+        }
+        for (int i = 0; i < 5; i++) sheet.autoSizeColumn(i);
     }
 
     public void top10Commerce(List<Student> students) {
         int rowNum = 0;
         sheet = workbook.createSheet("Top 10 Commerce");
+        //-----Top 10 Science Students-----
+        //Header Row
+        Row header = sheet.createRow(rowNum++);
+        header.createCell(0).setCellValue("Rank");
+        header.createCell(1).setCellValue("Roll No");
+        header.createCell(2).setCellValue("Name");
+        header.createCell(3).setCellValue("Total Marks");
+        header.createCell(4).setCellValue("Percentage");
+
+        List<Student> topScience = students.stream().filter(s -> s.stream.equals("COMMERCE"))
+        .sorted(Comparator.comparingDouble(Student::getPercentage).reversed()).limit(10).toList();
+
+        //Student Rows
+        int rank = 1;
+        for (Student s : topScience) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(rank++);
+            row.createCell(1).setCellValue(s.rollNo);
+            row.createCell(2).setCellValue(s.name);
+            row.createCell(3).setCellValue(s.getTotal());
+            row.createCell(4).setCellValue(s.getPercentage());
+        }
+        for (int i = 0; i < 5; i++) sheet.autoSizeColumn(i);
     }
 
     public void finalWrite() throws IOException{

@@ -22,4 +22,10 @@ public class Student {
         for (Subject s : subjects) obtained += s.getMarks();
         return obtained / subjects.size();
     }
+
+    public int getTotal(){
+        int total = 0;
+        for (Subject s : subjects) total += s.getMarks();
+        return total;
+    }
 }
