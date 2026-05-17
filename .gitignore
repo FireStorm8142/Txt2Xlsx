@@ -1,6 +1,4 @@
 target/
 .mvn/
 .idea/
-*.exe.xml
 *.xlsx
-*.txt
